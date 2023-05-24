@@ -15,7 +15,7 @@ class Passwords:
         # json.loads method.
         self.passwords = json.loads(self.encryption_helper.decrypt_file(passwords_file))
 
-    def add_password(self, name, username, password):
+    def add_password(self, name: str, username: str, password: str):
         new_password = { "name": name, "username": username, "password": password }
 
         self.passwords.append(new_password)
