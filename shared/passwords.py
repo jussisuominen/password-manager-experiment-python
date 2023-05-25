@@ -19,7 +19,22 @@ class Passwords:
         new_password = { "name": name, "username": username, "password": password }
 
         self.passwords.append(new_password)
+        self.persist_passwords()
 
+    def change_password(self, password_index: int, new_password: str):
+        try:
+            self.passwords[password_index]["password"] = new_password
+            self.persist_passwords()
+        except:
+            print("Could not change password")
+            exit()
+
+    def delete_password(self, password_index: int):
+        print(f"Deleting password {password_index}")
+        del self.passwords[password_index]
+        self.persist_passwords()
+
+    def persist_passwords(self):
         passwords_json = json.dumps(self.passwords)
 
         encrypted_passwords = self.encryption_helper.encrypt_data(passwords_json).decode()

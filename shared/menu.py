@@ -7,10 +7,15 @@ class Action:
         self.payload = payload
 
     def execute(self):
-        if(self.payload):
-            self.call_back_function(self.payload)
-        else:
+        print("Action.execute")
+        print(self.call_back_function)
+        print("payload: ")
+        print(self.payload)
+
+        if(self.payload == None):
             self.call_back_function()
+        else:
+            self.call_back_function(self.payload)
 
 
 class MenuItem:
@@ -43,4 +48,10 @@ class Menu:
 
         selection_index = int(input(prompt_string))-1
 
-        self.menu_items[selection_index].choose()
+        if(selection_index >= 0):
+            try:
+                self.menu_items[selection_index].choose()
+            except:
+                print("Invalid choice!")
+        else:
+            print("Invalid choice!")
