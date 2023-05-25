@@ -1,22 +1,9 @@
+import sys
 from os import system
 
+sys.path.append("/Users/jussisuominen2/Desktop/Ohjelmointi/Python/password-manager/shared")
 
-class Action:
-    def __init__(self, call_back_function, payload = None):
-        self.call_back_function = call_back_function
-        self.payload = payload
-
-    def execute(self):
-        print("Action.execute")
-        print(self.call_back_function)
-        print("payload: ")
-        print(self.payload)
-
-        if(self.payload == None):
-            self.call_back_function()
-        else:
-            self.call_back_function(self.payload)
-
+from shared.action import Action
 
 class MenuItem:
     def __init__(self, title, action: Action):
@@ -46,12 +33,14 @@ class Menu:
             print(f"{i}. {menu_item.title}")
             i += 1
 
-        selection_index = int(input(prompt_string))-1
+        try:
+            selection_index = int(input(prompt_string))-1
+        except:
+            print("Invalid input! Please input a number to select an option.")
+            exit()
 
-        if(selection_index >= 0):
-            try:
-                self.menu_items[selection_index].choose()
-            except:
-                print("Invalid choice!")
+
+        if(selection_index >= 0 and selection_index < len(self.menu_items)):
+            self.menu_items[selection_index].choose()
         else:
             print("Invalid choice!")
