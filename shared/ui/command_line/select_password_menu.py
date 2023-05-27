@@ -1,14 +1,11 @@
 from menu import Menu
+from shared.ui.command_line.menu import MenuItem
+from shared.action import Action
 
 
 class SelectPasswordMenu(Menu):
-    def __init__(self, passwords_model, selection_action):
+    def __init__(self, passwords, selection_function: function):
         super().__init__("Select Password")
-        self.passwords_model = passwords_model
-        self.selection_action = selection_action
 
-    def make_a_choice(self, prompt_string: str = ": "):
-        print(self.title)
-
-        i = 1
-        
+        for p in passwords:
+            self.add_menu_item(MenuItem(p["name"], Action(selection_function, )))
