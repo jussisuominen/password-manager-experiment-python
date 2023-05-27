@@ -7,7 +7,8 @@ from shared.passwords import Passwords
 from shared.encryption_helper import EncryptionHelper
 from shared.ui.command_line.menu import Menu, MenuItem, Action
 
-
+# This class contains the main functionality of the Password Manager console
+# application. 
 class PasswordManager:
     def __init__(self):
         self.encryption_helper = EncryptionHelper("test")

@@ -28,10 +28,8 @@ class Menu:
     def make_a_choice(self, prompt_string: str = ": "):
         system("tput reset")
         print(self.title)
-        i = 1
-        for menu_item in self.menu_items:
-            print(f"{i}. {menu_item.title}")
-            i += 1
+
+        self.show_options()
 
         selection_index = input(prompt_string)
 
@@ -57,3 +55,10 @@ class Menu:
             print("Invalid choice!")
             input("Press enter to continue!")
             self.make_a_choice()
+
+    def show_options(self):
+        i = 1
+
+        for menu_item in self.menu_items:
+            print(f"{i}. {menu_item.title}")
+            i += 1
