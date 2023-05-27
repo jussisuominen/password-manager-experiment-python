@@ -11,7 +11,9 @@ from shared.ui.command_line.menu import Menu, MenuItem, Action
 # application. 
 class PasswordManager:
     def __init__(self):
+        # We use encryption helper to encrypt passwords.
         self.encryption_helper = EncryptionHelper("test")
+        # Passwords model is used to store information about the passwords.
         self.passwords_model = Passwords(self.encryption_helper)
 
         # Create menus.
