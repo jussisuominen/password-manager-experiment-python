@@ -15,13 +15,13 @@ class PasswordManager:
 
         # Create menus.
         self.main_menu = Menu("Password Manager: Main Menu")
-        self.passwords_menu = Menu("Select password")
+        self.show_passwords_info_menu = Menu("Select password")
         self.change_password_menu = Menu("Select password to change")
         self.delete_password_menu = Menu("Select password to delete")
 
         i = 0
         for password in self.passwords_model.passwords:
-            self.passwords_menu.add_menu_item(MenuItem(password["name"], 
+            self.show_passwords_info_menu.add_menu_item(MenuItem(password["name"], 
                                                        Action(self.show_password_info, password)))
             self.change_password_menu.add_menu_item(MenuItem(password["name"], 
                                             Action(self.change_password, i)))
@@ -30,7 +30,7 @@ class PasswordManager:
             i += 1
 
         self.main_menu.add_menu_item(MenuItem("Show password info", 
-                                              Action(self.passwords_menu.make_a_choice)))
+                                              Action(self.show_passwords_info_menu.make_a_choice)))
         self.main_menu.add_menu_item(MenuItem("Add Password", 
                                               Action(self.add_password)))
         self.main_menu.add_menu_item(MenuItem("Change Password", 
@@ -48,7 +48,7 @@ class PasswordManager:
 
         password_dict = { "name": name, "username": username, "password": password }
 
-        self.passwords_menu.add_menu_item(MenuItem(password_dict["name"], 
+        self.show_passwords_info_menu.add_menu_item(MenuItem(password_dict["name"], 
                                                    Action(self.show_password_info, password_dict)))
 
         self.passwords_model.add_password(name, username, password)
@@ -85,7 +85,7 @@ class PasswordManager:
 
     def delete_password(self, password_index):
         self.passwords_model.delete_password(password_index)
-        del self.passwords_menu.menu_items[password_index]
+        del self.show_passwords_info_menu.menu_items[password_index]
         del self.change_password_menu.menu_items[password_index]
         del self.delete_password_menu.menu_items[password_index]
 
