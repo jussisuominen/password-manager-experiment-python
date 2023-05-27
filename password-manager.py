@@ -1,96 +1,110 @@
-import sys
-import os
+#!/Library/Frameworks/Python.framework/Versions/3.10/bin/python3
 
-import shared.master_password as master_password
+# Imports
+import time
 
-from shared.debug import debug_message
 from shared.passwords import Passwords
 from shared.encryption_helper import EncryptionHelper
-
-sys.path.append("./shared")
-
-
-# This function shows the menu that is defined in a dictionary. Each key of the dictionary will
-# be the title of the menu item and each value of the dictionary will be action performed
-# when the menu item is selected. 
-# The function also asks user to select a menu item and performs the action that is attached to 
-# the menu item.
-def show_menu(menu):
-    os.system("tput reset")
-    print("-" * 50)
-    i = 1
-    menu_actions = [] # This will contain the menu actions.
-
-    # Show menu items and add their actions to menu_actions.
-    for menu_item in menu.keys():
-        print(f"{i}. {menu_item}")
-        menu_actions.append(menu[menu_item])
-        i = i + 1
-
-    print("-" * 50)
-
-    selection = input("Selection: ")
-
-    # Perform action of the selected menu item.
-    menu_actions[int(selection)-1]()
+from shared.ui.command_line.menu import Menu, MenuItem, Action
 
 
-def show_password_info(password):
-    print("")
-    print(password["name"])
-    print("-" * 50)
-    print("Username: " + password["username"])
-    print("Password: " + password["name"])
+class PasswordManager:
+    def __init__(self):
+        self.encryption_helper = EncryptionHelper("test")
+        self.passwords_model = Passwords(self.encryption_helper)
 
-    input("Press enter to continue!")
+        # Create menus.
+        self.main_menu = Menu("Password Manager: Main Menu")
+        self.passwords_menu = Menu("Select password")
+        self.change_password_menu = Menu("Select password to change")
+        self.delete_password_menu = Menu("Select password to delete")
 
-    global main_menu
+        i = 0
+        for password in self.passwords_model.passwords:
+            self.passwords_menu.add_menu_item(MenuItem(password["name"], 
+                                                       Action(self.show_password_info, password)))
+            self.change_password_menu.add_menu_item(MenuItem(password["name"], 
+                                            Action(self.change_password, i)))
+            self.delete_password_menu.add_menu_item(MenuItem(password["name"], 
+                                            Action(self.delete_password, i)))
+            i += 1
 
-    show_menu(main_menu)
+        self.main_menu.add_menu_item(MenuItem("Show password info", 
+                                              Action(self.passwords_menu.make_a_choice)))
+        self.main_menu.add_menu_item(MenuItem("Add Password", 
+                                              Action(self.add_password)))
+        self.main_menu.add_menu_item(MenuItem("Change Password", 
+                                              Action(self.change_password_menu.make_a_choice)))
+        self.main_menu.add_menu_item(MenuItem("Delete Password", 
+                                              Action(self.delete_password_menu.make_a_choice)))
+        self.main_menu.add_menu_item(MenuItem("Exit", 
+                                              Action(self.close_app)))
 
-def show_select_password_menu():
-    print("")
-    print("Select password")
-    select_password_menu = {}
-    global passwords_model
+    def add_password(self):
+        name, username, password = self.ask_password_information()
+
+        if name == "" or username == "" or password == "":
+            self.main_menu.make_a_choice()
+
+        password_dict = { "name": name, "username": username, "password": password }
+
+        self.passwords_menu.add_menu_item(MenuItem(password_dict["name"], 
+                                                   Action(self.show_password_info, password_dict)))
+
+        self.passwords_model.add_password(name, username, password)
+
+        self.main_menu.make_a_choice()
+
+    def ask_password_information(self):
+        name = input("Password name: ")
+        username = input("Username: ")
+        password = input("Password")
+
+        return (name, username, password)
     
-    # Create a menu that has password names as items and show_password_info as action
-    # (show_password_info will get the password object).
-    for password in passwords_model.passwords:
-        password_name = password["name"]
-        select_password_menu[password_name] = lambda: show_password_info(password)
+    def change_password(self, password_index):
+        print(f"Changing password {password_index}")
 
-    show_menu(select_password_menu)
+        new_password = input("Password")
 
-main_menu = {
-    "Show password info": show_select_password_menu,
-    "Exit": exit
-}
+        if new_password != "":
+            print("Empty password! Returning to main menu!")
+            time.sleep(1)
 
-# Check if master password has been set
-# if(master_password.master_password_is_set()):
-#     # Master password has been set.
-#     debug_message("Master password has been set!")
+            try:
+                self.passwords_model.change_password(password_index, new_password)
+            except:
+                print("Could not change password! ")
+        else:
+            print("Empty password! Returning to main menu!")
 
-#     # Ask master password from user
-#     master_password_input = input("Master password: ")
+        self.main_menu.make_a_choice()
 
-#     if(master_password.master_password_is_correct(master_password_input)):
-#         print("Master password is correct!")
-#     else:
-#         print("Master password is incorrect!")
-#         exit()
-# else:
-#     print("Master password has not been set!")
-#     print("Please enter master password that you want to use!")
+    def close_app(self):
+        exit()
 
-#     # Ask master password from user
-#     master_password_input = input("Master password: ")
+    def delete_password(self, password_index):
+        self.passwords_model.delete_password(password_index)
+        del self.passwords_menu.menu_items[password_index]
+        del self.change_password_menu.menu_items[password_index]
+        del self.delete_password_menu.menu_items[password_index]
 
-#     master_password.set_master_password(master_password_input)
+        self.main_menu.make_a_choice()
+    
+    def show_password_info(self, password):
+        name, username, password_string = password.values()
+        print(name)
+        print(f"Username: {username}")
+        print(f"Password: {password_string}")
 
-# encryption_helper = EncryptionHelper(master_password_input)
-encryption_helper = EncryptionHelper("test")
-passwords_model = Passwords(encryption_helper)
+        input("\nPress enter to continue!")
 
-show_menu(main_menu)
+        self.main_menu.make_a_choice()
+
+    def run(self):
+        self.main_menu.make_a_choice()
+
+try:
+    PasswordManager().run()
+except:
+    pass

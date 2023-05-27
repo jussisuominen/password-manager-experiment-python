@@ -1,7 +1,6 @@
 from cryptography.fernet import Fernet
 
 from shared.load_save_data import load_data
-# Master password for testing: k7PW_
 
 class EncryptionHelper:
     def __init__(self, master_password):
