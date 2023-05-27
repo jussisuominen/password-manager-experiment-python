@@ -1,9 +1,11 @@
+#!/Library/Frameworks/Python.framework/Versions/3.10/bin/python3
+
 # Imports
 import time
 
 from shared.passwords import Passwords
 from shared.encryption_helper import EncryptionHelper
-from shared.menu import Menu, MenuItem, Action
+from shared.ui.command_line.menu import Menu, MenuItem, Action
 
 
 class PasswordManager:
@@ -36,7 +38,7 @@ class PasswordManager:
         self.main_menu.add_menu_item(MenuItem("Delete Password", 
                                               Action(self.delete_password_menu.make_a_choice)))
         self.main_menu.add_menu_item(MenuItem("Exit", 
-                                              Action(exit)))
+                                              Action(self.close_app)))
 
     def add_password(self):
         name, username, password = self.ask_password_information()
@@ -78,6 +80,9 @@ class PasswordManager:
 
         self.main_menu.make_a_choice()
 
+    def close_app(self):
+        exit()
+
     def delete_password(self, password_index):
         self.passwords_model.delete_password(password_index)
         del self.passwords_menu.menu_items[password_index]
@@ -88,7 +93,7 @@ class PasswordManager:
     
     def show_password_info(self, password):
         name, username, password_string = password.values()
-        print(f"Password name: {name}")
+        print(name)
         print(f"Username: {username}")
         print(f"Password: {password_string}")
 
@@ -99,5 +104,7 @@ class PasswordManager:
     def run(self):
         self.main_menu.make_a_choice()
 
-    
-PasswordManager().run()
+try:
+    PasswordManager().run()
+except:
+    pass

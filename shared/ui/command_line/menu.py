@@ -33,14 +33,27 @@ class Menu:
             print(f"{i}. {menu_item.title}")
             i += 1
 
+        selection_index = input(prompt_string)
+
+        if(selection_index == "^C"):
+            # User has pressed Ctrl-C (or equivalent). Exit!
+            exit()
+
         try:
-            selection_index = int(input(prompt_string))-1
+            # Try to convert string input to integer.
+            selection_index = int(selection_index)
+            # Decrement selection index by one because the list starts from 0
+            # and users choice starts from 1.
+            selection_index -= 1
         except:
             print("Invalid input! Please input a number to select an option.")
-            exit()
+            input("Press enter to continue!")
+            self.make_a_choice()
 
 
         if(selection_index >= 0 and selection_index < len(self.menu_items)):
             self.menu_items[selection_index].choose()
         else:
             print("Invalid choice!")
+            input("Press enter to continue!")
+            self.make_a_choice()
