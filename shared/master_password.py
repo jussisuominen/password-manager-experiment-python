@@ -8,7 +8,7 @@ from shared.load_save_data import load_data, save_data
 sys.path.append("../shared")
 
 # Location (path) and name of the master password data file.
-master_password_file = "/Users/jussisuominen2/Desktop/Ohjelmointi/Python/password-manager/data/master_password"
+master_password_file = "./data/master_password"
 
 
 # This function loads master password data (hashed master password and salt) from the data file

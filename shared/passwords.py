@@ -16,6 +16,8 @@ class Passwords:
         try:
             self.passwords = json.loads(self.encryption_helper.decrypt_file(passwords_file))
         except:
+            # Something went wrong while decrypting password data. The user probably entered
+            # a wrong master password.
             print('Error when decrypting password data! Check your master password.')
             exit(-1)
 

@@ -11,8 +11,13 @@ from shared.ui.command_line.menu_items import create_main_menu
 # application.
 class PasswordManager:
     def __init__(self):
+        # Ask user to input the master password which is used to generate an encryption
+        # key. Use getpass to ask the password without echoing.
+        try:
+            master_password = getpass.getpass('Master Password: ')
+        except:
+            print('Error!')
         # We use encryption helper to encrypt passwords.
-        master_password = getpass.getpass('Master Password: ')
         self.encryption_helper = EncryptionHelper(master_password)
         # Passwords model is used to store information about the passwords.
         self.passwords_model = Passwords(self.encryption_helper)

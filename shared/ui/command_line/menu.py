@@ -19,8 +19,9 @@ class MenuItem:
 
 
 class Menu:
-    def __init__(self, title):
+    def __init__(self, title: str, empty_input_callback = None):
         self.title = title
+        self.empty_input_callback = empty_input_callback
         self.menu_items = []
 
     def add_menu_item(self, menu_item: MenuItem):
@@ -38,6 +39,10 @@ class Menu:
         self.show_options()
 
         selection_index = input(prompt_string)
+
+        if(selection_index == ""):
+            if(self.empty_input_callback != None):
+                self.empty_input_callback()
 
         if(selection_index == "^C"):
             # User has pressed Ctrl-C (or equivalent). Exit!

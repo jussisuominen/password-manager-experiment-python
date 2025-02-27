@@ -5,7 +5,7 @@ from shared.ui.command_line.select_password_menu import SelectPasswordMenu
 def create_main_menu(passwords_model):
     main_menu = Menu("Password Manager: Main Menu")
 
-    show_password_info_menu_item = ShowPasswordInfoMenuItem(
+    show_password_details_menu_item = ShowPasswordDetailsMenuItem(
             passwords_model, main_menu)
     change_password_menu_item = ChangePasswordMenuItem(passwords_model, 
                                                            main_menu)
@@ -16,11 +16,11 @@ def create_main_menu(passwords_model):
     # and Delete Password menu items because if there are no passwords
     # you can't show password info or change/delete a password.
     if len(passwords_model.passwords) == 0:
-        show_password_info_menu_item.visible = False
+        show_password_details_menu_item.visible = False
         change_password_menu_item.visible = False
         delete_password_menu_item.visible = False
 
-    main_menu.add_menu_item(show_password_info_menu_item)
+    main_menu.add_menu_item(show_password_details_menu_item)
     main_menu.add_menu_item(AddPasswordMenuItem(passwords_model, 
                                                          main_menu))
     main_menu.add_menu_item(change_password_menu_item)
@@ -30,9 +30,9 @@ def create_main_menu(passwords_model):
     return main_menu
 
 
-class ShowPasswordInfoMenuItem(MenuItem):
+class ShowPasswordDetailsMenuItem(MenuItem):
     def __init__(self, passwords_model, main_menu):
-        super().__init__("Show password info", Action(self.show_password_info))
+        super().__init__("Show password details", Action(self.show_password_info))
         self.passwords_model = passwords_model
         self.main_menu = main_menu
     def choose(self):
@@ -112,11 +112,14 @@ class DeletePasswordMenuItem(MenuItem):
         select_password_menu = SelectPasswordMenu(self.passwords_model, 
                                                   self.delete_password,
                                                   self.main_menu)
-        select_password_menu.title = "Change password info\nSelect password"
+        select_password_menu.title = "Delete password"
         select_password_menu.make_a_choice()
     def delete_password(self, password_index):
-        self.passwords_model.delete_password(password_index)
+        answer = input('Are you sure you want to delete this password? (y/N)')
 
+        if(answer.lower() == 'y'):
+            self.passwords_model.delete_password(password_index)
+            
         self.main_menu = create_main_menu(self.passwords_model)
 
         self.main_menu.make_a_choice()

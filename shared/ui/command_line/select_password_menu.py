@@ -5,7 +5,7 @@ from shared.action import Action
 
 class SelectPasswordMenu(Menu):
     def __init__(self, passwords_model, select_callback, main_menu):
-        super().__init__("Select Password")
+        super().__init__("Select Password", main_menu.make_a_choice)
 
         if len(passwords_model.passwords) == 0:
             print("There are no passwords! Please add one!")
