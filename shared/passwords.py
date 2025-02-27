@@ -13,7 +13,11 @@ class Passwords:
         # Load passwords from file. Password data is stored in encrypted JSON format so
         # it needs to be decrypted first. After decrypted it needs to be parsed with
         # json.loads method.
-        self.passwords = json.loads(self.encryption_helper.decrypt_file(passwords_file))
+        try:
+            self.passwords = json.loads(self.encryption_helper.decrypt_file(passwords_file))
+        except:
+            print('Error when decrypting password data! Check your master password.')
+            exit(-1)
 
     def add_password(self, name: str, username: str, password: str):
         new_password = { "name": name, "username": username, "password": password }
