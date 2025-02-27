@@ -9,6 +9,7 @@ class MenuItem:
     def __init__(self, title, action: Action):
         self.title = title
         self.action = action
+        self.visible = True
 
     def show(self):
         print(self.title)
@@ -25,13 +26,16 @@ class Menu:
     def add_menu_item(self, menu_item: MenuItem):
         self.menu_items.append(menu_item)
 
-    def make_a_choice(self, prompt_string: str = ": "):
-        system("tput reset")
+    def clear(self):
+        self.menu_items = []
+
+    def make_a_choice(self, clear_screen = True, prompt_string: str = ": "):
+        if(clear_screen == True):
+            system("tput reset")
+
         print(self.title)
-        i = 1
-        for menu_item in self.menu_items:
-            print(f"{i}. {menu_item.title}")
-            i += 1
+
+        self.show_options()
 
         selection_index = input(prompt_string)
 
@@ -57,3 +61,17 @@ class Menu:
             print("Invalid choice!")
             input("Press enter to continue!")
             self.make_a_choice()
+
+    def show_options(self):
+        visible_menu_items = []
+        
+        for menu_item in self.menu_items:
+            if menu_item.visible == True:
+                visible_menu_items.append(menu_item)
+            
+        i = 1
+        for menu_item in visible_menu_items:
+            print(f"{i}. {menu_item.title}")
+            i += 1
+
+        self.menu_items = visible_menu_items
